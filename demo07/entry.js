@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Component from 'com/Compoent.jsx';
+//没带后缀名
+import Component from 'com/Component';
 
 require("./style.css");
 
