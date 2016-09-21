@@ -1,0 +1,28 @@
+{
+  "name": "webpack-react-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sn-demo/webpack-react-demo.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sn-demo/webpack-react-demo/issues"
+  },
+  "homepage": "https://github.com/sn-demo/webpack-react-demo#readme",
+  "dependencies": {
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2"
+  },
+  "devDependencies": {
+    "express": "^4.14.0",
+    "webpack": "^1.13.2",
+    "webpack-hot-middleware": "^2.12.2"
+  }
+}
