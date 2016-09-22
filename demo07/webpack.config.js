@@ -1,6 +1,7 @@
 var webpack = require('webpack')
 var path = require('path')
 module.exports = {
+  devtool: "#source-map",
   entry: "./entry.js",
   output: {
     filename: 'bundle.js',

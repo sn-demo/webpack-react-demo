@@ -6,12 +6,11 @@ export default class Component extends React.Component {
   }
 
   render(){
+    debugger;
     return (
       <div className="bg">
-      
       </div>
     )
   }
-
 }
 
