@@ -1,27 +1,47 @@
 var webpack = require('webpack')
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var path = require('path')
-var config = {
-  devtool: "#source-map",
-  entry: [
-    //'webpack-dev-server/client?http://0.0.0.0:3000', // WebpackDevServer host and port
-    'webpack-hot-middleware/client',
+var HtmlWebpackPlugin = require('html-webpack-plugin')
+var isProduction = process.env.NODE_ENV === "production";
+
+if(isProduction){
+  var entry =  [
     "./entry.js",//app 入口文件
-  ],
+  ];
+}else{
+  var entry =  [
+    'webpack-hot-middleware/client',//热替换入口文件
+    "./entry.js",//app 入口文件
+  ];
+}
+
+var config = {
+  devtool: isProduction ? "#source-map":"#eval-source-map",
+  entry: entry, 
   output: {
-    filename: 'bundle.js',
-    path: path.resolve(__dirname,'./public/js'),//打包输出目录，以package.json为准，是用相对路径
-    publicPath: '/js/',//内存输出目录，以index.html为准,使用绝对路径
+    filename: 'bundle.js?hash=[hash]',
+    //js打包输出目录，以package.json为准，是用相对路径
+    path: path.resolve(__dirname,'./public/js'),
+    //内存和打包静态文件输出目录，以index.html为准,使用绝对路径，最好以斜杠/结尾，要不有意想不到的bug
+    publicPath: '/js/',
   },
   module: {
     loaders: [
       //匹配到rquire中以.css结尾的文件则直接使用指定loader
-      { test: /\.css$/, loader: ExtractTextPlugin.extract("style", "css") },
+      { 
+        test: /\.css$/, 
+        loader: isProduction ? ExtractTextPlugin.extract("style", "css") : "style!css", 
+      },
       //limit是base64转换最大限制，小于设置值，都会转为base64格式
-      //name是提取图片的命名方式
+      //name是在css中提取图片的命名方式
       { 
         test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/, //匹配图片或字体格式的文件
-        loader: 'url-loader?limit=50000&name=[path]images/[name].[hash].[ext]'
+        //[path]是以publicPath为准
+        loader: 'url-loader',
+        query: {
+          limit: 50000,
+          name: isProduction ? "[path]../images/[name].[hash].[ext]" : "images/[name].[hash].[ext]",
+        }
       },
       { 
         //匹配.js或.jsx后缀名的文件
@@ -40,23 +60,33 @@ var config = {
   },
   plugins: [
     new webpack.NoErrorsPlugin(),
-    //热替换必须的开启的插件
-		new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV), 
     }),
-    new ExtractTextPlugin('css/styles.css', {
-      allChunks: true //最好true,要不后面加上sass-loader等时，会出现css没有提取的现象
+    new HtmlWebpackPlugin({
+      template: 'html_template/index.html',
+      //通过生成的html文件，使用上级目录在webpack-dev-middleware生成的内存文件中是访问不到的
+      //不使用上级目录就可以，生产环境就没问题
+      filename: isProduction ? './../index.html' : 'index.html',//以output.publicPath为参考位置,index.html在其上一级 
     })
   ]
 };
-if(process.env.NODE_ENV === "production"){
+if(isProduction){
   var UglifyJsPlugin = new webpack.optimize.UglifyJsPlugin({
       compress: {
           warnings: false
       }
   });
   config.plugins.push(UglifyJsPlugin)
+  config.plugins.push(
+    //生成环境才把css单独打包，这样在开发环境css的热替也能生效。
+    new ExtractTextPlugin('../css/styles.css?hash=[hash]', {
+      allChunks: true //最好true,要不后面加上sass-loader等时，会出现css没有提取的现象
+    })
+  )
+}else{
+  //热替换必须的开启的插件
+  config.plugins.push(new webpack.HotModuleReplacementPlugin());
 }
-
 module.exports = config;
+
