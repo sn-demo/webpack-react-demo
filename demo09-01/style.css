@@ -1,0 +1,6 @@
+.bg {
+  width: 100px;
+  height: 100px;
+  background: url('./react.png');
+  background-size: 100% 100%;
+}
