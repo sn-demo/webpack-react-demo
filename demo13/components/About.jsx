@@ -1,6 +1,4 @@
-import React from 'react';
 import { Alert } from 'antd';
-//import moment from 'moment';
 
 export default class Component extends React.Component {
   constructor(props){
