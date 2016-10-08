@@ -11,12 +11,13 @@ if(isProduction){
 }else{
   var entry =  [
     'webpack-hot-middleware/client',//热替换入口文件
-    "./entry.js",//app 入口文件
+    'react-hot-loader/patch',
+    './entry.js',//app 入口文件
   ];
 }
 
 var config = {
-  devtool: isProduction ? "#source-map":"#source-map",
+  devtool: isProduction ? '#source-map':'#eval-source-map',
   entry: {
     libs: ['antd/lib/alert'],
     app: entry,

@@ -9,7 +9,6 @@ export default class Component extends React.Component {
   render(){
     return (
       <div>
-        <Alert message="这是home页" type="success" showIcon closable/>
       </div>
     )
   }
