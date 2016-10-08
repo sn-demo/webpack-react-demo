@@ -39,7 +39,7 @@ export default class Component extends React.Component {
   render(){
     var Contents = this.state.contents
     if(!Contents){
-      return false;
+      Contents = require('../components/Home').default;
     }
     return (
       <div>
